@@ -79,21 +79,29 @@ gradlew test
 
 ### Diagramas
 
+**Diagrama de Componen**
 ![DIAGRAMA COMPONENTE](https://github.com/klintfox/user-service/blob/main/captures/DC.PNG)
 
+**Diagrama de Secuencia**
 ![DIAGRAMA DE SECUENCIA](https://github.com/klintfox/user-service/blob/main/captures/DS.PNG)
 
 ### Postman
 
+**Registro de Usuario**
 ![Registro de Usuario](https://github.com/klintfox/user-service/blob/main/captures/1.PNG)
 
+**Consulta de Usuario**
 ![Consulta de Usuario](https://github.com/klintfox/user-service/blob/main/captures/2.PNG)
 
 ### Validaciones
+
+**Validación - Usuario ya Registrado**
 ![Validación - Usuario ya Registrado](https://github.com/klintfox/user-service/blob/main/captures/3.PNG)
 
+**Validación - Formato de Correo**
 ![Validación - Formato de Correo](https://github.com/klintfox/user-service/blob/main/captures/4.PNG)
 
+**Validación - Formato de la Contraseña**
 ![Validación - Formato de la Contraseña](https://github.com/klintfox/user-service/blob/main/captures/5.PNG)
 
 ### Cobertura

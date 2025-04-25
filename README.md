@@ -112,4 +112,4 @@ gradlew test
 ![JACOCO COVERAGE](https://github.com/klintfox/user-service/blob/main/captures/JACOCO.PNG)
 
 **Resumen de Test**
-![TEST](https://github.com/klintfox/user-service/blob/main/captures/TEST.PNG)
+![TEST](https://github.com/klintfox/user-service/blob/main/captures/TEST.PNg)

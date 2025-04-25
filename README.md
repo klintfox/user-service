@@ -37,3 +37,67 @@ Este proyecto es un microservicio desarrollado utilizando **SpringBoot 2.5.14** 
 ```
 
 ## Solución
+
+## Requisitos
+- Java 11
+- Gradle 7.4
+- Lombok
+
+### Despligue
+1. Clona este repositorio:
+
+```bash
+git clone https://github.com/klintfox/user-service.git
+cd user-service
+```
+   
+2 Asegúrate de tener Gradle instalado. Si no lo tienes, puedes instalarlo desde aquí.
+
+3 Para construir el proyecto, ejecuta el siguiente comando en la raíz del proyecto:
+
+```sh
+gradlew build  (windows)
+```
+
+4 Ejecución del proyecto
+```sh
+./gradlew bootRun
+```
+
+5 Pruebas
+Este proyecto incluye pruebas unitarias y de integración utilizando JUnit y Mockito. Para ejecutar las pruebas, usa el siguiente comando:
+
+```bash
+gradlew test
+```
+
+6 Además, para generar un informe de cobertura de pruebas utilizando JaCoCo, ejecuta el siguiente comando:
+
+```bash
+./gradlew jacocoTestReport
+```
+
+### Diagramas
+
+![DIAGRAMA COMPONENTE](https://github.com/klintfox/user-service/blob/main/captures/DC.PNG)
+
+![DIAGRAMA DE SECUENCIA](https://github.com/klintfox/user-service/blob/main/captures/DS.PNG)
+
+### Postman
+
+![Registro de Usuario](https://github.com/klintfox/user-service/blob/main/captures/1.PNG)
+
+![Consulta de Usuario](https://github.com/klintfox/user-service/blob/main/captures/2.PNG)
+
+### Validaciones
+![Validación - Usuario ya Registrado](https://github.com/klintfox/user-service/blob/main/captures/3.PNG)
+
+![Validación - Formato de Correo](https://github.com/klintfox/user-service/blob/main/captures/4.PNG)
+
+![Validación - Formato de la Contraseña](https://github.com/klintfox/user-service/blob/main/captures/5.PNG)
+
+### Cobertura
+
+![JACOCO COVERAGE](https://github.com/klintfox/user-service/blob/main/captures/JACOCO.PNG)
+
+![TEST](https://github.com/klintfox/user-service/blob/main/captures/TEST.PNG)

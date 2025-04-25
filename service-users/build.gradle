@@ -1,0 +1,82 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.14'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+}
+
+group = 'com.bci'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(11)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+    // Spring Boot y herramientas
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    // Base de datos
+    implementation 'com.h2database:h2'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    
+    //Jackson
+    //implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2' // versión actual al momento
+    //implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'      
+
+    // Otras dependencias de prueba (Mockito, etc.)
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'    
+ 
+}
+
+jacoco {
+    toolVersion = "0.8.7"  // Puedes usar la versión más reciente si es necesario
+}
+
+jacocoTestReport {
+    dependsOn test  // Asegura que el reporte se ejecute después de las pruebas
+
+    reports {
+        xml.required = true   // Configura que el reporte XML se genere
+        html.required = true  // Configura que el reporte HTML se genere
+        html.destination = file("D:/2-WorkSpaces/Wk-Java-Gradle/api-users/build/reports/jacoco/test/html")  // Ruta absoluta
+        csv.required = false  // Desactiva el reporte CSV
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80 // Configura la cobertura mínima al 80%
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

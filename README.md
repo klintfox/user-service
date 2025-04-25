@@ -80,9 +80,11 @@ gradlew test
 ### Diagramas
 
 **Diagrama de Componente**
+
 ![DIAGRAMA COMPONENTE](https://github.com/klintfox/user-service/blob/main/captures/DC.PNG)
 
 **Diagrama de Secuencia**
+
 ![DIAGRAMA DE SECUENCIA](https://github.com/klintfox/user-service/blob/main/captures/DS.PNG)
 
 ### Postman

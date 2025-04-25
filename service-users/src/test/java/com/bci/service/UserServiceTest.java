@@ -68,208 +68,197 @@ public class UserServiceTest {
 		userDTO.setPassword("Password123");
 		userDTO.setName("Test User");
 		userDTO.setPhones(Arrays.asList(new PhoneDTO(1234567890L, 1, "1")));
-	}	
-	
+	}
+
 	@Test
 	void loginUser_shouldReturnLoginResponse_whenTokenIsValid() {
-	    // Arrange
-	    String bearerToken = "Bearer abc.def.ghi";
-	    String rawToken = "abc.def.ghi";
-	    UUID userId = UUID.randomUUID();
+		String bearerToken = "Bearer abc.def.ghi";
+		String rawToken = "abc.def.ghi";
+		UUID userId = UUID.randomUUID();
 
-	    User user = new User();
-	    user.setId(userId);
-	    user.setName("Jane Doe");
-	    user.setEmail("jane@example.com");
-	    user.setPassword("securePass123");
-	    user.setCreated(LocalDateTime.of(2023, 1, 1, 12, 0));
-	    user.setIsActive(true);
+		User user = new User();
+		user.setId(userId);
+		user.setName("Jane Doe");
+		user.setEmail("jane@example.com");
+		user.setPassword("securePass123");
+		user.setCreated(LocalDateTime.of(2023, 1, 1, 12, 0));
+		user.setIsActive(true);
 
-	    Phone phone = new Phone();
-	    phone.setPhoneNumber(123456789L);
-	    phone.setCitycode(1);
-	    phone.setCountrycode("57");
+		Phone phone = new Phone();
+		phone.setPhoneNumber(123456789L);
+		phone.setCitycode(1);
+		phone.setCountrycode("57");
 
-	    user.setPhones(List.of(phone));
+		user.setPhones(List.of(phone));
 
-	    String newGeneratedToken = "new.jwt.token";
+		String newGeneratedToken = "new.jwt.token";
 
-	    // Mocks
-	    when(jwtUtil.extractUserId(rawToken)).thenReturn(userId);
-	    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-	    when(jwtUtil.generateToken(user)).thenReturn(newGeneratedToken);
-	    when(userRepository.save(any(User.class))).thenReturn(user);
+		// Mocks
+		when(jwtUtil.extractUserId(rawToken)).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(jwtUtil.generateToken(user)).thenReturn(newGeneratedToken);
+		when(userRepository.save(any(User.class))).thenReturn(user);
 
-	    // Act
-	    LoginResponseDTO response = userService.loginUser(bearerToken);
+		LoginResponseDTO response = userService.loginUser(bearerToken);
 
-	    // Assert
-	    assertNotNull(response);
-	    assertEquals(userId, response.getId());
-	    assertEquals(user.getCreated(), response.getCreated());
-	    assertNotNull(response.getLastLogin());
-	    assertEquals(newGeneratedToken, response.getToken());
-	    assertTrue(response.getIsActive());
-	    assertEquals(user.getName(), response.getName());
-	    assertEquals(user.getEmail(), response.getEmail());
-	    assertEquals(user.getPassword(), response.getPassword());
-	    assertEquals(1, response.getPhones().size());
-	    assertEquals(phone.getPhoneNumber(), response.getPhones().get(0).getNumber());
-	    assertEquals(phone.getCitycode(), response.getPhones().get(0).getCitycode());
-	    assertEquals(phone.getCountrycode(), response.getPhones().get(0).getContrycode());
+		assertNotNull(response);
+		assertEquals(userId, response.getId());
+		assertEquals(user.getCreated(), response.getCreated());
+		assertNotNull(response.getLastLogin());
+		assertEquals(newGeneratedToken, response.getToken());
+		assertTrue(response.getIsActive());
+		assertEquals(user.getName(), response.getName());
+		assertEquals(user.getEmail(), response.getEmail());
+		assertEquals(user.getPassword(), response.getPassword());
+		assertEquals(1, response.getPhones().size());
+		assertEquals(phone.getPhoneNumber(), response.getPhones().get(0).getNumber());
+		assertEquals(phone.getCitycode(), response.getPhones().get(0).getCitycode());
+		assertEquals(phone.getCountrycode(), response.getPhones().get(0).getContrycode());
 	}
-	
+
 	@Test
 	public void testCreateUser_WithPhones() {
-	    // Arrange
-	    UserDTO userDTO = new UserDTO();
-	    userDTO.setName("John");
-	    userDTO.setEmail("john@example.com");
-	    userDTO.setPassword("password123");
+		UserDTO userDTO = new UserDTO();
+		userDTO.setName("John");
+		userDTO.setEmail("john@example.com");
+		userDTO.setPassword("password123");
 
-	    PhoneDTO phoneDTO = new PhoneDTO();
-	    phoneDTO.setNumber(123456789L);
-	    phoneDTO.setCitycode(1);
-	    phoneDTO.setContrycode("54");
-	    userDTO.setPhones(Collections.singletonList(phoneDTO));
+		PhoneDTO phoneDTO = new PhoneDTO();
+		phoneDTO.setNumber(123456789L);
+		phoneDTO.setCitycode(1);
+		phoneDTO.setContrycode("54");
+		userDTO.setPhones(Collections.singletonList(phoneDTO));
 
-	    // Act
-	    User user = userService.createUser(userDTO);
+		User user = userService.createUser(userDTO);
 
-	    // Assert
-	    assertNotNull(user);
-	    assertEquals(userDTO.getName(), user.getName());
-	    assertEquals(userDTO.getEmail(), user.getEmail());
-	    assertTrue(user.getIsActive());
-	    assertNotNull(user.getCreated());
-	    assertNotNull(user.getLastLogin());
+		// Assert
+		assertNotNull(user);
+		assertEquals(userDTO.getName(), user.getName());
+		assertEquals(userDTO.getEmail(), user.getEmail());
+		assertTrue(user.getIsActive());
+		assertNotNull(user.getCreated());
+		assertNotNull(user.getLastLogin());
 
-	    assertNotNull(user.getPhones());
-	    assertEquals(1, user.getPhones().size());
+		assertNotNull(user.getPhones());
+		assertEquals(1, user.getPhones().size());
 
-	    Phone phone = user.getPhones().get(0);
-	    assertEquals(phoneDTO.getNumber(), phone.getPhoneNumber());
-	    assertEquals(phoneDTO.getCitycode(), phone.getCitycode());
-	    assertEquals(phoneDTO.getContrycode(), phone.getCountrycode());
-	    assertEquals(user, phone.getUser()); // validamos la relación inversa
+		Phone phone = user.getPhones().get(0);
+		assertEquals(phoneDTO.getNumber(), phone.getPhoneNumber());
+		assertEquals(phoneDTO.getCitycode(), phone.getCitycode());
+		assertEquals(phoneDTO.getContrycode(), phone.getCountrycode());
+		assertEquals(user, phone.getUser());
 	}
-	
-	// Test para loginUser con token inválido
-    @Test
-    public void testLoginUser_InvalidToken() {
-        // Arrange
-        String invalidToken = "Invalid token";
 
-        // Act & Assert
-        assertThrows(InvalidTokenException.class, () -> userService.loginUser(invalidToken));
-    }
+	@Test
+	public void testLoginUser_InvalidToken() {
+		// Arrange
+		String invalidToken = "Invalid token";
 
-    // Test para loginUser cuando el usuario no existe
-    @Test
-    public void testLoginUser_UserNotFound() {
-        // Arrange
-        String token = "Bearer fakeToken";
-        UUID userId = UUID.randomUUID();
-        
-        when(jwtUtil.extractUserId(anyString())).thenReturn(userId);
-        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+		// Act & Assert
+		assertThrows(InvalidTokenException.class, () -> userService.loginUser(invalidToken));
+	}
 
-        // Act & Assert
-        assertThrows(UserNotFoundException.class, () -> userService.loginUser(token));
-    }
+	@Test
+	public void testLoginUser_UserNotFound() {
+		// Arrange
+		String token = "Bearer fakeToken";
+		UUID userId = UUID.randomUUID();
 
-	
-	// Test para createUser (indirectamente cubierto por registerUser)
-    @Test
-    public void testCreateUser() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setName("John");
-        userDTO.setEmail("john@example.com");
-        userDTO.setPassword("password123");
+		when(jwtUtil.extractUserId(anyString())).thenReturn(userId);
+		when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
-        User user = userService.createUser(userDTO);
+		// Act & Assert
+		assertThrows(UserNotFoundException.class, () -> userService.loginUser(token));
+	}
 
-        assertNotNull(user);
-        assertEquals(userDTO.getName(), user.getName());
-        assertEquals(userDTO.getEmail(), user.getEmail());
-        assertTrue(user.getIsActive());
-        assertNotNull(user.getCreated());
-        assertNotNull(user.getLastLogin());
-    }
+	@Test
+	public void testCreateUser() {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setName("John");
+		userDTO.setEmail("john@example.com");
+		userDTO.setPassword("password123");
 
-    // Test para createResponse (indirectamente cubierto por registerUser)
-    @Test
-    public void testCreateResponse() {
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setName("John");
-        user.setEmail("john@example.com");
-        user.setIsActive(true);
-        user.setCreated(LocalDateTime.now());
-        user.setLastLogin(LocalDateTime.now());
+		User user = userService.createUser(userDTO);
 
-        String token = "fakeToken";
-        UserResponseDTO response = userService.createResponse(user, token);
+		assertNotNull(user);
+		assertEquals(userDTO.getName(), user.getName());
+		assertEquals(userDTO.getEmail(), user.getEmail());
+		assertTrue(user.getIsActive());
+		assertNotNull(user.getCreated());
+		assertNotNull(user.getLastLogin());
+	}
 
-        assertNotNull(response);
-        assertEquals(user.getId().toString(), response.getId());
-        assertEquals(user.getCreated(), response.getCreated());
-        assertEquals(user.getLastLogin(), response.getLastLogin());
-        assertEquals(token, response.getToken());
-    }
-    
-    @Test
-    void registerUser_shouldThrowUserCreationException_whenUserIsNull() {
-        // Arrange
-        UserDTO userDTO = new UserDTO();
-        userDTO.setName("John");
-        userDTO.setEmail("john@example.com");
-        userDTO.setPassword("ValidPass123");
+	// Test para createResponse (indirectamente cubierto por registerUser)
+	@Test
+	public void testCreateResponse() {
+		User user = new User();
+		user.setId(UUID.randomUUID());
+		user.setName("John");
+		user.setEmail("john@example.com");
+		user.setIsActive(true);
+		user.setCreated(LocalDateTime.now());
+		user.setLastLogin(LocalDateTime.now());
 
-        // Mock: createUser devuelve null
-        doReturn(null).when(userService).createUser(userDTO);
+		String token = "fakeToken";
+		UserResponseDTO response = userService.createResponse(user, token);
 
-        // Act & Assert
-        UserCreationException exception = assertThrows(UserCreationException.class, () -> {
-            userService.registerUser(userDTO);
-        });
+		assertNotNull(response);
+		assertEquals(user.getId().toString(), response.getId());
+		assertEquals(user.getCreated(), response.getCreated());
+		assertEquals(user.getLastLogin(), response.getLastLogin());
+		assertEquals(token, response.getToken());
+	}
 
-        assertEquals(Message.USER_CREATION_FAILED.getMessage(), exception.getMessage());
-    }
-    
-    @Test
-    void registerUser_shouldThrowTokenGenerationException_whenTokenIsNull() {
-        // Arrange
-        UserDTO userDTO = new UserDTO();
-        userDTO.setName("Jane");
-        userDTO.setEmail("jane@example.com");
-        userDTO.setPassword("ValidPass456");
+	@Test
+	void registerUser_shouldThrowUserCreationException_whenUserIsNull() {
+		// Arrange
+		UserDTO userDTO = new UserDTO();
+		userDTO.setName("John");
+		userDTO.setEmail("john@example.com");
+		userDTO.setPassword("ValidPass123");
 
-        User fakeUser = new User();
-        fakeUser.setEmail(userDTO.getEmail());
-        fakeUser.setPassword(userDTO.getPassword());
-        fakeUser.setName(userDTO.getName());
+		// Mock: createUser devuelve null
+		doReturn(null).when(userService).createUser(userDTO);
 
-        // No-op para validateUser
-        doNothing().when(userService).validateUser(userDTO);
+		// Act & Assert
+		UserCreationException exception = assertThrows(UserCreationException.class, () -> {
+			userService.registerUser(userDTO);
+		});
 
-        // Simula que se crea un usuario válido
-        doReturn(fakeUser).when(userService).createUser(userDTO);
+		assertEquals(Message.USER_CREATION_FAILED.getMessage(), exception.getMessage());
+	}
 
-        // Simula guardado en la BD
-        when(userRepository.save(any(User.class))).thenReturn(fakeUser);
+	@Test
+	void registerUser_shouldThrowTokenGenerationException_whenTokenIsNull() {
+		// Arrange
+		UserDTO userDTO = new UserDTO();
+		userDTO.setName("Jane");
+		userDTO.setEmail("jane@example.com");
+		userDTO.setPassword("ValidPass456");
 
-        // Simula fallo en generación de token
-        when(jwtUtil.generateToken(any(User.class))).thenReturn(null);
+		User fakeUser = new User();
+		fakeUser.setEmail(userDTO.getEmail());
+		fakeUser.setPassword(userDTO.getPassword());
+		fakeUser.setName(userDTO.getName());
 
-        // Act & Assert
-        TokenGenerationException exception = assertThrows(
-            TokenGenerationException.class,
-            () -> userService.registerUser(userDTO)
-        );
+		// No-op para validateUser
+		doNothing().when(userService).validateUser(userDTO);
 
-        assertEquals(Message.TOKEN_GENERATION_FAILED.getMessage(), exception.getMessage());
-    }
+		// Simula que se crea un usuario válido
+		doReturn(fakeUser).when(userService).createUser(userDTO);
+
+		// Simula guardado en la BD
+		when(userRepository.save(any(User.class))).thenReturn(fakeUser);
+
+		// Simula fallo en generación de token
+		when(jwtUtil.generateToken(any(User.class))).thenReturn(null);
+
+		// Act & Assert
+		TokenGenerationException exception = assertThrows(TokenGenerationException.class,
+				() -> userService.registerUser(userDTO));
+
+		assertEquals(Message.TOKEN_GENERATION_FAILED.getMessage(), exception.getMessage());
+	}
 
 	@Test
 	public void testRegisterUser_InvalidEmailFormat() {
@@ -284,7 +273,7 @@ public class UserServiceTest {
 	void testRegisterUser_UserAlreadyExists() {
 		// Preparar datos
 		UserDTO userDTO = new UserDTO();
-		userDTO.setEmail("juan12@example.com"); // Email con formato válido
+		userDTO.setEmail("juan12@example.com");
 		userDTO.setPassword("Juanjuan12");
 		userDTO.setName("Test User");
 
@@ -292,7 +281,6 @@ public class UserServiceTest {
 		when(userRepository.existsByEmail("juan12@example.com")).thenReturn(true);
 
 		// Comprobar que se lanza la excepción
-//		UserService userService = new UserService();
 		UserAlreadyExistsException thrown = assertThrows(UserAlreadyExistsException.class, () -> {
 			userService.registerUser(userDTO);
 		});
@@ -305,30 +293,30 @@ public class UserServiceTest {
 	void testInvalidEmailFormat() {
 		// Preparar datos
 		UserDTO userDTO = new UserDTO();
-		userDTO.setEmail("invalid-email"); // Email con formato incorrecto
+		userDTO.setEmail("invalid-email");
 		userDTO.setPassword("validPassword123");
 		userDTO.setName("Test User");
 
 		// Comprobar que se lanza la excepción
 		InvalidEmailFormatException thrown = assertThrows(InvalidEmailFormatException.class, () -> {
-			userService.registerUser(userDTO); // Esto debe lanzar la excepción si el email es inválido
+			userService.registerUser(userDTO);
 		});
 
 		// Verificar el mensaje de la excepción
 		assertEquals(Message.FORMATO_EMAIL_INVALIDO.getMessage(), thrown.getMessage());
 	}
-	
+
 	@Test
 	void testInvalidPasswordFormat() {
 		// Preparar datos
 		UserDTO userDTO = new UserDTO();
-		userDTO.setEmail("juan12@example.com"); // Email con formato incorrecto
+		userDTO.setEmail("juan12@example.com");
 		userDTO.setPassword("juan12");
 		userDTO.setName("Test User");
 
 		// Comprobar que se lanza la excepción
 		InvalidPasswordFormatException thrown = assertThrows(InvalidPasswordFormatException.class, () -> {
-			userService.registerUser(userDTO); // Esto debe lanzar la excepción si el email es inválido
+			userService.registerUser(userDTO);
 		});
 
 		// Verificar el mensaje de la excepción

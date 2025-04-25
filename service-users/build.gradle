@@ -60,7 +60,7 @@ jacocoTestReport {
     reports {
         xml.required = true   // Configura que el reporte XML se genere
         html.required = true  // Configura que el reporte HTML se genere
-        html.destination = file("D:/2-WorkSpaces/Wk-Java-Gradle/api-users/build/reports/jacoco/test/html")  // Ruta absoluta
+        html.destination = file("D:/Proyectos/user-service/service-users/build/reports/jacoco/test/html")  // Ruta absoluta
         csv.required = false  // Desactiva el reporte CSV
     }
 }

@@ -6,10 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,27 +22,32 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.bci.dto.LoginResponseDTO;
 import com.bci.dto.PhoneDTO;
 import com.bci.dto.UserDTO;
 import com.bci.dto.UserResponseDTO;
+import com.bci.entity.Phone;
 import com.bci.entity.User;
 import com.bci.exception.InvalidEmailFormatException;
 import com.bci.exception.InvalidPasswordFormatException;
 import com.bci.exception.InvalidTokenException;
+import com.bci.exception.TokenGenerationException;
 import com.bci.exception.UserAlreadyExistsException;
+import com.bci.exception.UserCreationException;
 import com.bci.exception.UserNotFoundException;
 import com.bci.repository.UserRepository;
 import com.bci.security.JwtUtil;
 import com.bci.util.Message;
-import com.bci.util.PatternConstants;
 
 public class UserServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
 
+	@Spy
 	@InjectMocks
 	private UserService userService;
 
@@ -60,6 +69,90 @@ public class UserServiceTest {
 		userDTO.setName("Test User");
 		userDTO.setPhones(Arrays.asList(new PhoneDTO(1234567890L, 1, "1")));
 	}	
+	
+	@Test
+	void loginUser_shouldReturnLoginResponse_whenTokenIsValid() {
+	    // Arrange
+	    String bearerToken = "Bearer abc.def.ghi";
+	    String rawToken = "abc.def.ghi";
+	    UUID userId = UUID.randomUUID();
+
+	    User user = new User();
+	    user.setId(userId);
+	    user.setName("Jane Doe");
+	    user.setEmail("jane@example.com");
+	    user.setPassword("securePass123");
+	    user.setCreated(LocalDateTime.of(2023, 1, 1, 12, 0));
+	    user.setIsActive(true);
+
+	    Phone phone = new Phone();
+	    phone.setPhoneNumber(123456789L);
+	    phone.setCitycode(1);
+	    phone.setCountrycode("57");
+
+	    user.setPhones(List.of(phone));
+
+	    String newGeneratedToken = "new.jwt.token";
+
+	    // Mocks
+	    when(jwtUtil.extractUserId(rawToken)).thenReturn(userId);
+	    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+	    when(jwtUtil.generateToken(user)).thenReturn(newGeneratedToken);
+	    when(userRepository.save(any(User.class))).thenReturn(user);
+
+	    // Act
+	    LoginResponseDTO response = userService.loginUser(bearerToken);
+
+	    // Assert
+	    assertNotNull(response);
+	    assertEquals(userId, response.getId());
+	    assertEquals(user.getCreated(), response.getCreated());
+	    assertNotNull(response.getLastLogin());
+	    assertEquals(newGeneratedToken, response.getToken());
+	    assertTrue(response.getIsActive());
+	    assertEquals(user.getName(), response.getName());
+	    assertEquals(user.getEmail(), response.getEmail());
+	    assertEquals(user.getPassword(), response.getPassword());
+	    assertEquals(1, response.getPhones().size());
+	    assertEquals(phone.getPhoneNumber(), response.getPhones().get(0).getNumber());
+	    assertEquals(phone.getCitycode(), response.getPhones().get(0).getCitycode());
+	    assertEquals(phone.getCountrycode(), response.getPhones().get(0).getContrycode());
+	}
+	
+	@Test
+	public void testCreateUser_WithPhones() {
+	    // Arrange
+	    UserDTO userDTO = new UserDTO();
+	    userDTO.setName("John");
+	    userDTO.setEmail("john@example.com");
+	    userDTO.setPassword("password123");
+
+	    PhoneDTO phoneDTO = new PhoneDTO();
+	    phoneDTO.setNumber(123456789L);
+	    phoneDTO.setCitycode(1);
+	    phoneDTO.setContrycode("54");
+	    userDTO.setPhones(Collections.singletonList(phoneDTO));
+
+	    // Act
+	    User user = userService.createUser(userDTO);
+
+	    // Assert
+	    assertNotNull(user);
+	    assertEquals(userDTO.getName(), user.getName());
+	    assertEquals(userDTO.getEmail(), user.getEmail());
+	    assertTrue(user.getIsActive());
+	    assertNotNull(user.getCreated());
+	    assertNotNull(user.getLastLogin());
+
+	    assertNotNull(user.getPhones());
+	    assertEquals(1, user.getPhones().size());
+
+	    Phone phone = user.getPhones().get(0);
+	    assertEquals(phoneDTO.getNumber(), phone.getPhoneNumber());
+	    assertEquals(phoneDTO.getCitycode(), phone.getCitycode());
+	    assertEquals(phoneDTO.getContrycode(), phone.getCountrycode());
+	    assertEquals(user, phone.getUser()); // validamos la relación inversa
+	}
 	
 	// Test para loginUser con token inválido
     @Test
@@ -123,6 +216,59 @@ public class UserServiceTest {
         assertEquals(user.getCreated(), response.getCreated());
         assertEquals(user.getLastLogin(), response.getLastLogin());
         assertEquals(token, response.getToken());
+    }
+    
+    @Test
+    void registerUser_shouldThrowUserCreationException_whenUserIsNull() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName("John");
+        userDTO.setEmail("john@example.com");
+        userDTO.setPassword("ValidPass123");
+
+        // Mock: createUser devuelve null
+        doReturn(null).when(userService).createUser(userDTO);
+
+        // Act & Assert
+        UserCreationException exception = assertThrows(UserCreationException.class, () -> {
+            userService.registerUser(userDTO);
+        });
+
+        assertEquals(Message.USER_CREATION_FAILED.getMessage(), exception.getMessage());
+    }
+    
+    @Test
+    void registerUser_shouldThrowTokenGenerationException_whenTokenIsNull() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName("Jane");
+        userDTO.setEmail("jane@example.com");
+        userDTO.setPassword("ValidPass456");
+
+        User fakeUser = new User();
+        fakeUser.setEmail(userDTO.getEmail());
+        fakeUser.setPassword(userDTO.getPassword());
+        fakeUser.setName(userDTO.getName());
+
+        // No-op para validateUser
+        doNothing().when(userService).validateUser(userDTO);
+
+        // Simula que se crea un usuario válido
+        doReturn(fakeUser).when(userService).createUser(userDTO);
+
+        // Simula guardado en la BD
+        when(userRepository.save(any(User.class))).thenReturn(fakeUser);
+
+        // Simula fallo en generación de token
+        when(jwtUtil.generateToken(any(User.class))).thenReturn(null);
+
+        // Act & Assert
+        TokenGenerationException exception = assertThrows(
+            TokenGenerationException.class,
+            () -> userService.registerUser(userDTO)
+        );
+
+        assertEquals(Message.TOKEN_GENERATION_FAILED.getMessage(), exception.getMessage());
     }
 
 	@Test

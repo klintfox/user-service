@@ -1,5 +1,6 @@
 package com.bci.exception;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,22 @@ public class GlobalExceptionHandler {
 		ErrorResponse response = new ErrorResponse();
 		response.setError(List.of(detail));
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	}
+	
+	@ExceptionHandler(UserCreationException.class)
+	public ResponseEntity<ErrorResponse> handleUserCreationException(UserCreationException ex) {
+	    ErrorDetail detail = new ErrorDetail(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+	    ErrorResponse response = new ErrorResponse();
+	    response.setError(List.of(detail));
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	}
+
+	@ExceptionHandler(TokenGenerationException.class)
+	public ResponseEntity<ErrorResponse> handleTokenGenerationException(TokenGenerationException ex) {
+	    ErrorDetail detail = new ErrorDetail(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+	    ErrorResponse response = new ErrorResponse();
+	    response.setError(List.of(detail));
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	}
 
 }

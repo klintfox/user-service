@@ -79,7 +79,7 @@ gradlew test
 
 ### Diagramas
 
-**Diagrama de Componen**
+**Diagrama de Componente**
 ![DIAGRAMA COMPONENTE](https://github.com/klintfox/user-service/blob/main/captures/DC.PNG)
 
 **Diagrama de Secuencia**
@@ -106,6 +106,8 @@ gradlew test
 
 ### Cobertura
 
+**Cobertura**
 ![JACOCO COVERAGE](https://github.com/klintfox/user-service/blob/main/captures/JACOCO.PNG)
 
+**Resumen de Test**
 ![TEST](https://github.com/klintfox/user-service/blob/main/captures/TEST.PNG)

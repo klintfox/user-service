@@ -53,7 +53,7 @@ cd user-service
    
 2 Asegúrate de tener Gradle instalado. Si no lo tienes, puedes instalarlo desde aquí.
 
-3 Para construir el proyecto, ejecuta el siguiente comando en la raíz del proyecto:
+3 Para construir el proyecto ubicarse en la ruta dentro del repositorio 'service-users', ejecuta el siguiente comando en la raíz del proyecto:
 
 ```sh
 gradlew build  (windows)

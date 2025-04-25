@@ -81,41 +81,6 @@ public class UserControllerTest {
 		verify(userService, times(1)).registerUser(userDTO);
 	}
 
-//    @Test
-//    public void testSignUp_UserAlreadyExists() throws Exception {
-//        // Crear un DTO de usuario con el correo que ya existe
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setEmail("existinguser@example.com");
-//        userDTO.setPassword("password123");
-//
-//        // Simula que el repositorio devuelve true cuando buscas por el correo
-//        when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(true);  // Simula que el usuario ya existe
-//
-//        // Simula que el servicio lanza la excepción UserAlreadyExistsException
-//        when(userService.registerUser(userDTO)).thenThrow(new UserAlreadyExistsException("User already exists"));
-//
-//        // Realiza la solicitud POST y verifica la respuesta
-//        mockMvc.perform(post("/api/usuarios/sign-up")
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .content("{\n" +
-//                    "  \"name\": \"Juan\",\n" +
-//                    "  \"email\": \"existinguser@example.com\",\n" +
-//                    "  \"password\": \"password123\",\n" +
-//                    "  \"phones\": [\n" +
-//                    "    {\n" +
-//                    "      \"number\": 12334567,\n" +
-//                    "      \"citycode\": 2,\n" +
-//                    "      \"contrycode\": \"52\"\n" +
-//                    "    }\n" +
-//                    "  ]\n" +
-//                    "}"))
-//            .andExpect(status().isConflict()) // Espera un estado 409
-//            .andExpect(jsonPath("$.error[0].message").value("User already exists")); // Verifica el mensaje de error
-//
-//        // Verifica que el método registerUser fue llamado una vez
-//        verify(userService, times(1)).registerUser(userDTO);
-//    }
-
 	@Test
 	public void testLogin() throws Exception {
 		// Crear un token de ejemplo (este token puede ser un valor simulado)

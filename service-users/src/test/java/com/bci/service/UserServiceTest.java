@@ -59,72 +59,7 @@ public class UserServiceTest {
 		userDTO.setPassword("Password123");
 		userDTO.setName("Test User");
 		userDTO.setPhones(Arrays.asList(new PhoneDTO(1234567890L, 1, "1")));
-	}
-	
-//	@Test
-//	public void testRegisterUser() {
-//	    // Arrange
-//	    UserDTO userDTO = new UserDTO();
-//	    userDTO.setEmail("newuser@example.com");
-//	    userDTO.setPassword("validPassword123");
-//	    userDTO.setName("New User");
-//	    userDTO.setPhones(Arrays.asList(new PhoneDTO(9876543210L, 1, "1")));
-//	    
-//	    User user = new User();
-//	    user.setId(UUID.randomUUID());
-//	    user.setEmail(userDTO.getEmail());
-//	    user.setName(userDTO.getName());
-//	    user.setPassword("encodedPassword");
-//	    user.setIsActive(true);
-//	    user.setCreated(LocalDateTime.now());
-//	    user.setLastLogin(LocalDateTime.now());
-//
-//	    when(userRepository.existsByEmail(anyString())).thenReturn(false); // No existe el usuario
-//	    when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-//	    when(jwtUtil.generateToken(any(User.class))).thenReturn("generatedToken");
-//	    when(userRepository.save(any(User.class))).thenReturn(user);
-//
-//	    // Act
-//	    UserResponseDTO response = userService.registerUser(userDTO);
-//
-//	    // Assert
-//	    assertNotNull(response);
-//	    assertEquals(user.getId().toString(), response.getId());
-//	    assertEquals(user.getName(), response.getName());
-//	    assertEquals(user.getEmail(), response.getEmail());
-//	    assertTrue(response.getActive());
-//	    assertEquals("generatedToken", response.getToken());
-//	    assertNotNull(response.getCreated());
-//	    assertNotNull(response.getLastLogin());
-//	}
-	
-//	@Test
-//	public void testLoginUser_ValidToken() throws Exception {
-//	    // Suponemos que el token ya ha sido generado en el test de sign-up y lo reutilizamos.
-//	    String validToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuMUBleGFtcGxlLmNvbSIsInVzZXJJZCI6ImIyODBjZWFlLTMyNGMtNDAwMy1iNWNhLTg1Zjk3ZDI3NGFmYSIsImlhdCI6MTc0NTU1MDg5MCwiZXhwIjoxNzQ1NjM3MjkwfQ.cIBUQuXSsXghj2Fl4KxpJYFIRez7bnh7v8g_wkNr0r4";
-//
-//	    // Crear un usuario de prueba (mismo usuario usado en el test de sign-up)
-//	    UUID userId = UUID.fromString("b280ceae-324c-4003-b5ca-85f97d274afa");  // Id del usuario registrado
-//	    User mockUser = new User();
-//	    mockUser.setId(userId);
-//	    mockUser.setEmail("juan1@example.com");
-//	    mockUser.setPassword("Juanjuan12");
-//
-//	    // Simulamos la recuperación del usuario del repositorio
-//	    when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(mockUser));
-//
-//	    // Llamamos al método loginUser con el token reutilizado
-//	    LoginResponseDTO loggedInUser = userService.loginUser(validToken);
-//
-//	    // Verificamos que el usuario devuelto no sea null
-//	    assertNotNull(loggedInUser, "El usuario no debería ser null");
-//
-//	    // Verificamos que el usuario devuelto tenga los valores correctos
-//	    assertEquals("juan1@example.com", loggedInUser.getEmail(), "El email del usuario no es correcto");
-//
-//	    // Verificamos que el método del repositorio fue llamado con el userId correcto
-//	    verify(userRepository).findById(userId);
-//	}
+	}	
 	
 	// Test para loginUser con token inválido
     @Test

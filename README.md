@@ -92,6 +92,9 @@ Endpoint el cual será para consultar el usuario, para ello debe utilizar el tok
 - Gradle 7.4
 - Lombok
 
+**nota**
+Todos los comandos gradle son para windows
+
 ### Despligue
 1. Clona este repositorio:
 
@@ -105,12 +108,12 @@ cd user-service
 3 Para construir el proyecto ubicarse en la ruta dentro del repositorio 'service-users', ejecuta el siguiente comando en la raíz del proyecto:
 
 ```sh
-gradlew build  (windows)
+gradlew build
 ```
 
 4 Ejecución del proyecto
 ```sh
-./gradlew bootRun
+gradlew bootRun
 ```
 
 5 Pruebas
@@ -123,8 +126,9 @@ gradlew test
 6 Además, para generar un informe de cobertura de pruebas utilizando JaCoCo, ejecuta el siguiente comando:
 
 ```bash
-./gradlew jacocoTestReport
+gradlew jacocoTestReport
 ```
+
 
 ### Diagramas
 

@@ -100,7 +100,7 @@ git clone https://github.com/klintfox/user-service.git
 cd user-service
 ```
    
-2 Asegúrate de tener Gradle instalado. Si no lo tienes, puedes instalarlo desde aquí.
+2 Asegúrate de tener Gradle y Lombok instalado.
 
 3 Para construir el proyecto ubicarse en la ruta dentro del repositorio 'service-users', ejecuta el siguiente comando en la raíz del proyecto:
 
